@@ -68,12 +68,15 @@ describe("LendingNFT", function () {
     });
 
     it("Borrow NFT", async function () {
+      expect(await lendingNFT.lendingCount(1)).to.equal(0);
+
       const borrow1Tx = await lendingNFT.connect(signer01).borrow(1);
       await borrow1Tx.wait();
 
       expect(await lendingNFT.ownerOf(1)).to.equal(signer00.address);
       expect(await lendingNFT.balanceOf(signer00.address)).to.equal(1);
       expect(await lendingNFT.balanceOf(signer01.address)).to.equal(1);
+      expect(await lendingNFT.lendingCount(1)).to.equal(1);
 
       // transfer
       const transfer1Tx = await lendingNFT

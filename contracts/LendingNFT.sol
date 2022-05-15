@@ -9,6 +9,7 @@ contract LendingNFT is ERC721PresetMinterPauserAutoId, Ownable {
 
     mapping(uint256 => address) private _borrowers;
     mapping(address => uint256) private _borrowingLimits;
+    mapping(uint256 => uint256) private _borrowingCount;
     string private _contractURI;
 
     constructor(string memory name, string memory symbol, string memory baseTokenURI, string memory initContractURI)
@@ -33,6 +34,7 @@ contract LendingNFT is ERC721PresetMinterPauserAutoId, Ownable {
         uint256 limit = block.timestamp + 15 minutes;
         _borrowers[tokenId] = borrower;
         _borrowingLimits[borrower] = limit;
+        _borrowingCount[tokenId]++;
 
         emit Borrow(borrower, owner, tokenId, limit);
     }
@@ -60,6 +62,10 @@ contract LendingNFT is ERC721PresetMinterPauserAutoId, Ownable {
             }
             return balance;
         }
+    }
+
+    function lendingCount(uint256 tokenId) public view virtual returns (uint256) {
+        return _borrowingCount[tokenId];
     }
 
     function burn(uint256 tokenId) public virtual override {
