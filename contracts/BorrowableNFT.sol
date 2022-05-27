@@ -22,12 +22,13 @@ contract BorrowableNFT is ERC721PresetMinterPauserAutoId, Ownable {
     }
 
     function borrow(uint256 tokenId) public virtual {
-        address owner = ERC721.ownerOf(tokenId);
+        address tokenOwner = ERC721.ownerOf(tokenId);
         address borrower = msg.sender;
 
-        require(owner != address(0), "No owner");
+        require(tokenOwner != address(0), "No owner");
         require(borrower != address(0), "No borrower");
-        require(owner != borrower, "The lender and the borrower are the same person");
+        require(tokenOwner != owner(), "If the Token holder is Contract Owner, it cannot be lent.");
+        require(tokenOwner != borrower, "The lender and the borrower are the same person");
         require(_borrowers[tokenId] == address(0) || _borrowingLimits[borrower] < block.timestamp, "Someone has already borrowed");
         require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
 
@@ -36,7 +37,7 @@ contract BorrowableNFT is ERC721PresetMinterPauserAutoId, Ownable {
         _borrowingLimits[borrower] = limit;
         _borrowingCount[tokenId]++;
 
-        emit Borrow(borrower, owner, tokenId, limit);
+        emit Borrow(borrower, tokenOwner, tokenId, limit);
     }
 
     function _isBorrowing(address borrower) internal view virtual returns(bool) {
