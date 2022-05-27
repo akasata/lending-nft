@@ -6,7 +6,8 @@
     "test": "hardhat test",
     "localchain": "hardhat node",
     "deploy": "hardhat run scripts/deploy.ts --network localhost",
-    "deploy:rinkeby": "hardhat run scripts/deploy.ts --network rinkeby"
+    "deploy:rinkeby": "hardhat run scripts/deploy.ts --network rinkeby",
+    "verify:rinkeby": "hardhat verify --constructor-args argument.ts --network rinkeby"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
