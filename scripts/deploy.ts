@@ -19,23 +19,23 @@ async function main() {
     throw new Error(`wrong settings! Update .env file.`);
   }
 
-  const LendingNFT = await ethers.getContractFactory("LendingNFT");
-  const lendingNFT = await LendingNFT.deploy(
+  const BorrowableNFT = await ethers.getContractFactory("BorrowableNFT");
+  const borrowableNFT = await BorrowableNFT.deploy(
     Settings.name,
     Settings.symbol,
     Settings.baseTokenUri,
     Settings.contractUri
   );
-  await lendingNFT.deployed();
-  console.log("deployed to:", lendingNFT.address);
+  await borrowableNFT.deployed();
+  console.log("deployed to:", borrowableNFT.address);
 
   for (let i = 0; i < Settings.mintNumber; i++) {
-    await mint(lendingNFT);
+    await mint(borrowableNFT);
   }
 }
 
-async function mint(lendingNFT: any) {
-  const mintTx = await lendingNFT.mint(
+async function mint(borrowableNFT: any) {
+  const mintTx = await borrowableNFT.mint(
     "0x74c90619c73c253606Bf8Ef02b46ffc76d64304B"
   );
   await mintTx.wait();

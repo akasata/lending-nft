@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LendingNFT is ERC721PresetMinterPauserAutoId, Ownable {
+contract BorrowableNFT is ERC721PresetMinterPauserAutoId, Ownable {
     event Borrow(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 limit);
 
     mapping(uint256 => address) private _borrowers;
