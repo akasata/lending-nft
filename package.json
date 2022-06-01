@@ -7,7 +7,8 @@
     "localchain": "hardhat node",
     "deploy": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:rinkeby": "hardhat run scripts/deploy.ts --network rinkeby",
-    "verify:rinkeby": "hardhat verify --constructor-args argument.ts --network rinkeby"
+    "deploy:erc721a:rinkeby": "hardhat run scripts/deployA.ts --network rinkeby",
+    "verify:rinkeby": "hardhat verify --network rinkeby"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
@@ -23,6 +24,7 @@
     "@typescript-eslint/parser": "^5.26.0",
     "chai": "^4.3.6",
     "dotenv": "^16.0.1",
+    "erc721a": "^4.0.0",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
