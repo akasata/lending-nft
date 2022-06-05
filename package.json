@@ -5,11 +5,17 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "localchain": "hardhat node",
-    "deploy": "hardhat run scripts/deploy.ts --network localhost",
-    "deploy:rinkeby": "hardhat run scripts/deploy.ts --network rinkeby",
-    "deploy:erc721a:rinkeby": "hardhat run scripts/deployA.ts --network rinkeby",
-    "deploy:erc721a:mainnet": "hardhat run scripts/deployA.ts --network mainnet",
-    "verify:rinkeby": "hardhat verify --network rinkeby"
+    "deploy": "hardhat run scripts/deploy.ts",
+    "deploy:nft:localhost": "hardhat run scripts/deployNFT.ts --network localhost",
+    "deploy:nft:rinkeby": "hardhat run scripts/deployNFT.ts --network rinkeby",
+    "deploy:nft:mainnet": "hardhat run scripts/deployNFT.ts --network mainnet",
+    "deploy:bw:localhost": "hardhat run scripts/deployBW.ts --network localhost",
+    "deploy:bw:rinkeby": "hardhat run scripts/deployBW.ts --network rinkeby",
+    "deploy:bw:mainnet": "hardhat run scripts/deployBW.ts --network mainnet",
+    "verify": "hardhat verify",
+    "verify:localhost": "hardhat verify --network localhost",
+    "verify:rinkeby": "hardhat verify --network rinkeby",
+    "verify:mainnet": "hardhat verify --network mainnet"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
