@@ -28,7 +28,7 @@ describe("BorrowableNFTERC721A", function () {
       await baseNFT.deployed();
 
       BWrapper = await ethers.getContractFactory("BorrowableWrapperA");
-      bWrapper = await BWrapper.deploy(baseNFT.address);
+      bWrapper = await BWrapper.deploy(baseNFT.address, 1440);
       await bWrapper.deployed();
     });
 
@@ -65,7 +65,7 @@ describe("BorrowableNFTERC721A", function () {
       await baseNFT.deployed();
 
       BWrapper = await ethers.getContractFactory("BorrowableWrapperA");
-      bWrapper = await BWrapper.deploy(baseNFT.address);
+      bWrapper = await BWrapper.deploy(baseNFT.address, 1440);
       await bWrapper.deployed();
 
       // mint

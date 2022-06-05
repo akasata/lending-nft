@@ -23,7 +23,10 @@ async function main() {
   console.log("deployed to(NFT):", baseNFT.address);
 
   const BWrapper = await ethers.getContractFactory("BorrowableWrapperA");
-  const bWrapper = await BWrapper.deploy(baseNFT.address);
+  const bWrapper = await BWrapper.deploy(
+    baseNFT.address,
+    Settings.lendingPeriodMin
+  );
   await bWrapper.deployed();
   console.log("deployed to(Wrapper):", bWrapper.address);
 

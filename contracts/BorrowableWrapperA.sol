@@ -14,9 +14,11 @@ contract BorrowableWrapperA is IERC721, Ownable {
     mapping(uint256 => address) private _borrowers;
     mapping(address => uint256) private _borrowingLimits;
     mapping(uint256 => uint256) private _borrowingCount;
+    uint256 private _lendingPeriodMin;
 
-    constructor(address nftAddress) {
+    constructor(address nftAddress, uint256 lendingPeriodMin) {
         nftContract = BaseNFTA(nftAddress);
+        _lendingPeriodMin = lendingPeriodMin;
     }
 
     function borrow(uint256 tokenId) public virtual {
@@ -30,7 +32,7 @@ contract BorrowableWrapperA is IERC721, Ownable {
         require(_borrowers[tokenId] == address(0) || _borrowingLimits[borrower] < block.timestamp, "Someone has already borrowed");
         require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
 
-        uint256 limit = block.timestamp + 15 minutes;
+        uint256 limit = block.timestamp + _lendingPeriodMin * 1 minutes;
         _borrowers[tokenId] = borrower;
         _borrowingLimits[borrower] = limit;
         _borrowingCount[tokenId]++;
