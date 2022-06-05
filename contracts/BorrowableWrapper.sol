@@ -115,6 +115,7 @@ contract BorrowableWrapper is IERC721, Ownable {
     //            IERC165
     // ==============================
     function supportsInterface(bytes4 interfaceId) external view returns (bool) {
-        return nftContract.supportsInterface(interfaceId);
+        // ERC165 interface ID for ERC165 and ERC721.
+        return interfaceId == 0x01ffc9a7 || interfaceId == 0x80ac58cd;
     }
 }
