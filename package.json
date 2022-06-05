@@ -8,6 +8,7 @@
     "deploy": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:rinkeby": "hardhat run scripts/deploy.ts --network rinkeby",
     "deploy:erc721a:rinkeby": "hardhat run scripts/deployA.ts --network rinkeby",
+    "deploy:erc721a:mainnet": "hardhat run scripts/deployA.ts --network mainnet",
     "verify:rinkeby": "hardhat verify --network rinkeby"
   },
   "devDependencies": {
