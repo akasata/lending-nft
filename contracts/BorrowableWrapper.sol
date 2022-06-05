@@ -3,21 +3,21 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./BaseNFTA.sol";
+import "./BaseNFT.sol";
 
-contract BorrowableWrapperA is IERC721, Ownable {
+contract BorrowableWrapper is IERC721, Ownable {
     error NotImplemented();
 
     event Borrow(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 limit);
 
-    BaseNFTA private nftContract;
+    BaseNFT private nftContract;
     mapping(uint256 => address) private _borrowers;
     mapping(address => uint256) private _borrowingLimits;
     mapping(uint256 => uint256) private _borrowingCount;
     uint256 private _lendingPeriodMin;
 
     constructor(address nftAddress, uint256 lendingPeriodMin) {
-        nftContract = BaseNFTA(nftAddress);
+        nftContract = BaseNFT(nftAddress);
         _lendingPeriodMin = lendingPeriodMin;
     }
 
@@ -81,46 +81,33 @@ contract BorrowableWrapperA is IERC721, Ownable {
         return nftContract.ownerOf(tokenId);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes calldata data
-    ) external override {
+    function safeTransferFrom(address, address, uint256, bytes calldata) external override {
         revert NotImplemented();
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) external override {
+    function safeTransferFrom(address, address, uint256) external override {
         revert NotImplemented();
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) external override {
+    function transferFrom(address, address, uint256) external override {
         revert NotImplemented();
     }
 
-    function approve(address to, uint256 tokenId) external override {
+    function approve(address, uint256) external override {
         revert NotImplemented();
     }
 
 
-    function setApprovalForAll(address operator, bool _approved) external override {
+    function setApprovalForAll(address, bool) external override {
         revert NotImplemented();
     }
 
 
-    function getApproved(uint256 tokenId) external view override returns (address operator) {
+    function getApproved(uint256) external view override returns (address) {
         revert NotImplemented();
     }
 
-    function isApprovedForAll(address owner, address operator) external view override returns (bool) {
+    function isApprovedForAll(address, address) external view override returns (bool) {
         revert NotImplemented();
     }
 

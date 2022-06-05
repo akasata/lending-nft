@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Contract, ContractFactory } from "ethers";
 
-describe("BorrowableNFTERC721A", function () {
+describe("BorrowableWrapper", function () {
   let contractOwner: SignerWithAddress;
   let borrower00: SignerWithAddress;
   let tokenHolder00: SignerWithAddress;
@@ -18,16 +18,16 @@ describe("BorrowableNFTERC721A", function () {
       [contractOwner, borrower00, tokenHolder00, tokenHolder01] =
         await ethers.getSigners();
 
-      BaseNFT = await ethers.getContractFactory("BaseNFTA");
+      BaseNFT = await ethers.getContractFactory("BaseNFT");
       baseNFT = await BaseNFT.deploy(
-        "BaseNFTA",
-        "BRRWA",
+        "BaseNFT",
+        "BRRW",
         "https://example.com/nfts/",
         "https://example.com/contracts/1"
       );
       await baseNFT.deployed();
 
-      BWrapper = await ethers.getContractFactory("BorrowableWrapperA");
+      BWrapper = await ethers.getContractFactory("BorrowableWrapper");
       bWrapper = await BWrapper.deploy(baseNFT.address, 1440);
       await bWrapper.deployed();
     });
@@ -55,16 +55,16 @@ describe("BorrowableNFTERC721A", function () {
 
   describe("Borrow NFT", function () {
     before(async () => {
-      BaseNFT = await ethers.getContractFactory("BaseNFTA");
+      BaseNFT = await ethers.getContractFactory("BaseNFT");
       baseNFT = await BaseNFT.deploy(
-        "BaseNFTA",
-        "BRRWA",
+        "BaseNFT",
+        "BRRW",
         "https://example.com/nfts/",
         "https://example.com/contracts/1"
       );
       await baseNFT.deployed();
 
-      BWrapper = await ethers.getContractFactory("BorrowableWrapperA");
+      BWrapper = await ethers.getContractFactory("BorrowableWrapper");
       bWrapper = await BWrapper.deploy(baseNFT.address, 1440);
       await bWrapper.deployed();
 

@@ -1,7 +1,7 @@
 {
   "name": "lending-nft-project",
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint && solhint contracts/**/*.sol",
     "compile": "hardhat compile",
     "test": "hardhat test",
     "localchain": "hardhat node",

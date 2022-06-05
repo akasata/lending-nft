@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract BaseNFTA is IERC721AQueryable, ERC721AQueryable, Ownable {
+contract BaseNFT is IERC721AQueryable, ERC721AQueryable, Ownable {
     string private _baseTokenURI;
     string private _contractURI;
 

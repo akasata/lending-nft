@@ -12,24 +12,27 @@ async function main() {
     throw new Error(`wrong settings! Update .env file.`);
   }
 
-  const BorrowableNFT = await ethers.getContractFactory("BorrowableNFT");
-  const borrowableNFT = await BorrowableNFT.deploy(
+  const BaseNFT = await ethers.getContractFactory("BaseNFT");
+  const baseNFT = await BaseNFT.deploy(
     Settings.name,
     Settings.symbol,
     Settings.baseTokenUri,
     Settings.contractUri
   );
-  await borrowableNFT.deployed();
-  console.log("deployed to:", borrowableNFT.address);
+  await baseNFT.deployed();
+  console.log("deployed to(NFT):", baseNFT.address);
 
-  for (let i = 0; i < Settings.mintNumber; i++) {
-    await mint(borrowableNFT);
-  }
-}
+  const BWrapper = await ethers.getContractFactory("BorrowableWrapper");
+  const bWrapper = await BWrapper.deploy(
+    baseNFT.address,
+    Settings.lendingPeriodMin
+  );
+  await bWrapper.deployed();
+  console.log("deployed to(Wrapper):", bWrapper.address);
 
-async function mint(borrowableNFT: any) {
-  const mintTx = await borrowableNFT.mint(
-    "0x74c90619c73c253606Bf8Ef02b46ffc76d64304B"
+  const mintTx = await baseNFT.mint(
+    "0x74c90619c73c253606Bf8Ef02b46ffc76d64304B",
+    Settings.mintNumber
   );
   await mintTx.wait();
   console.log(`mintTx hash: ${mintTx.hash}`);
