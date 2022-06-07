@@ -22,8 +22,7 @@ describe("BorrowableWrapper", function () {
       baseNFT = await BaseNFT.deploy(
         "BaseNFT",
         "BRRW",
-        "https://example.com/nfts/",
-        "https://example.com/contracts/1"
+        "https://example.com/nfts/"
       );
       await baseNFT.deployed();
 
@@ -45,12 +44,6 @@ describe("BorrowableWrapper", function () {
       expect(await baseNFT.balanceOf(contractOwner.address)).to.equal(119);
       expect(await bWrapper.balanceOf(contractOwner.address)).to.equal(119);
     });
-
-    it("Contract URI", async function () {
-      expect(await baseNFT.contractURI()).to.equal(
-        "https://example.com/contracts/1"
-      );
-    });
   });
 
   describe("Borrow NFT", function () {
@@ -59,8 +52,7 @@ describe("BorrowableWrapper", function () {
       baseNFT = await BaseNFT.deploy(
         "BaseNFT",
         "BRRW",
-        "https://example.com/nfts/",
-        "https://example.com/contracts/1"
+        "https://example.com/nfts/"
       );
       await baseNFT.deployed();
 

@@ -6,8 +6,7 @@ async function main() {
   if (
     !NFTSettings.name ||
     !NFTSettings.symbol ||
-    !NFTSettings.baseTokenUri ||
-    !NFTSettings.contractUri
+    !NFTSettings.baseTokenUri
   ) {
     throw new Error(`wrong settings! Update .env file.`);
   }
@@ -16,8 +15,7 @@ async function main() {
   const baseNFT = await BaseNFT.deploy(
     NFTSettings.name,
     NFTSettings.symbol,
-    NFTSettings.baseTokenUri,
-    NFTSettings.contractUri
+    NFTSettings.baseTokenUri
   );
   await baseNFT.deployed();
   console.log("deployed to(NFTAddress):", baseNFT.address);

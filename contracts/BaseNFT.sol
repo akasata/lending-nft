@@ -6,20 +6,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract BaseNFT is IERC721AQueryable, ERC721AQueryable, Ownable {
     string private _baseTokenURI;
-    string private _contractURI;
 
-    constructor(string memory name, string memory symbol, string memory baseTokenURI, string memory initContractURI)
+    constructor(string memory name, string memory symbol, string memory baseTokenURI)
     ERC721A(name, symbol) {
-        _contractURI = initContractURI;
         _baseTokenURI = baseTokenURI;
     }
 
     function _startTokenId() internal view override returns (uint256) {
         return 1;
-    }
-
-    function contractURI() public view returns (string memory) {
-        return _contractURI;
     }
 
     function mint(address to, uint256 quantity) public virtual onlyOwner {
