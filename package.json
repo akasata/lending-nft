@@ -13,9 +13,10 @@
     "deploy:bw:rinkeby": "hardhat run scripts/deployBW.ts --network rinkeby",
     "deploy:bw:mainnet": "hardhat run scripts/deployBW.ts --network mainnet",
     "verify": "hardhat verify",
-    "verify:localhost": "hardhat verify --network localhost",
-    "verify:rinkeby": "hardhat verify --network rinkeby",
-    "verify:mainnet": "hardhat verify --network mainnet"
+    "verify:nft:rinkeby": "hardhat verify --network rinkeby --constructor-args scripts/argBaseNFT.ts",
+    "verify:bw:rinkeby": "hardhat verify --network rinkeby --constructor-args scripts/argBorrowableWrapper.ts",
+    "verify:nft:mainnet": "hardhat verify --network mainnet --constructor-args scripts/argBaseNFT.ts",
+    "verify:bw:mainnet": "hardhat verify --network mainnet --constructor-args scripts/argBorrowableWrapper.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
