@@ -63,7 +63,7 @@ You can actually experience BorrowableNFT with [A Wizard of Tono NFT](https://op
 ![start transaction](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_004.png)
 
 Now you can use this NFT for 24 hours!
-Access [token-gated website](https://nextcommons.mintgate.io/go/pR8N3fg1T1hV/), you can download the e-book in either EPUB, mobi or PDF.
+Access [token-gated website](https://mgate.io/go/5IZXnD5UBDD-), you can download the e-book in either EPUB, mobi or PDF.
 
 # About
 
