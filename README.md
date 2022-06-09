@@ -34,7 +34,7 @@ After the period specified in the Contract (1 day by default), the NFT is return
 
 This mechanism allows BorrowableWrapper to be used in content gates to provide an NFT renting experience.
 
-# TODO
+## TODO
 
 - [ ] Make BorrowableWrapper dependent on ERC721AQueryable or ERC721Enumerable instead of BaseNFT
 - [ ] Implementation of Lendable Wrapper that realizes NFT lending
