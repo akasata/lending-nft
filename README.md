@@ -40,6 +40,31 @@ This mechanism allows BorrowableWrapper to be used in content gates to provide a
 - [ ] Implementation of Lendable Wrapper that realizes NFT lending
 - [ ] Add deploy and usage documentation
 
+## BorrowableNFT Demo
+
+You can actually experience BorrowableNFT with [A Wizard of Tono NFT](https://opensea.io/collection/a-wizard-of-tono) that applies this mechanism. 
+
+1. Access [BorrowableWrapper contract page(EtherScan)](https://etherscan.io/address/0xdbacF8A3591DB696783D174AB8FF773a778B23fb)
+
+2. Open "Contract" tab
+
+![Open "Contract" tab](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_001.png)
+
+3. Select "Write Contract"
+
+![Select "Write Contract"](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_002.png)
+
+4. Connect your Wallet
+
+![Connect your Wallet](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_003.png)
+
+5. Open "borrow", input tokenId and push "Write"(Gas fees are required at this timing.)
+
+![start transaction](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_004.png)
+
+Now you can use this NFT for 24 hours!
+Access [token-gated website](https://nextcommons.mintgate.io/go/pR8N3fg1T1hV/), you can download the e-book in either EPUB, mobi or PDF.
+
 # About
 
 This Smart Contract is an OSS version of `A Wizard of Tono` Book NFT.
