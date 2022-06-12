@@ -48,22 +48,44 @@ You can actually experience BorrowableNFT with [A Wizard of Tono NFT](https://li
 
 2. Open "Contract" tab
 
-![Open "Contract" tab](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_001.png)
+![Open "Contract" tab](https://user-images.githubusercontent.com/28495/173220168-28dd0e4e-8741-402b-aa95-cf61048ff38d.png)
 
 3. Select "Write Contract"
 
-![Select "Write Contract"](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_002.png)
+![Select "Write Contract"](https://user-images.githubusercontent.com/28495/173220172-5517d08d-30b0-4b8d-82e9-6811e147ff19.png)
 
 4. Connect your Wallet
 
-![Connect your Wallet](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_003.png)
+![Connect your Wallet](https://user-images.githubusercontent.com/28495/173220177-dccddd4c-2167-4692-ab24-d0e60386cf29.png)
 
 5. Open "borrow", input tokenId and push "Write"(Gas fees are required at this timing.)
 
-![start transaction](https://gateway.pinata.cloud/ipfs/Qmcv7YGrD2ALAqPgfw5wUef7BkuBE2u6dEYMPLcAoBoyrD/es_004.png)
+About tokenId: You can specify any tokenId from any NFT sold. You can also search by Twitter's [#youcanborrowawizardoftono](https://twitter.com/search?q=%23youcanborrowawizardoftono) hashtag.
+
+![start transaction](https://user-images.githubusercontent.com/28495/173220194-412a1909-2a9e-41e2-b7de-fc9413042b6d.png)
+
+Note: If your gas fees is unusually high or if you point out a possible error, please refer to the [Troubleshooting](#Troubleshooting).
 
 Now you can use this NFT for 24 hours!
 Access [token-gated website](https://mgate.io/go/5IZXnD5UBDD-), you can download the e-book in either EPUB, mobi or PDF.
+
+## Troubleshooting
+
+### An abnormally high gas fees or an error is predicted
+
+If the NFT cannot be borrowed, the following error/alert may be displayed.
+(This is a screenshot of Metamask.)
+
+![es_005](https://user-images.githubusercontent.com/28495/173220399-c15c0fce-3cbb-4257-b8cc-5f87be91879f.png)
+
+The following causes are possible.
+
+- Owner of NFT
+  - If the NFT Owner wants to try BorrowableNFT, try it on a wallet that doesn't own an NFT.
+- NFT has already been borrowed
+- NFT not for sale yet
+
+If you want to find a BorrowableNFT tokenId that you can borrow, please search on Twitter [#youcanborrowawizardoftono](https://twitter.com/search?q=%23youcanborrowawizardoftono) hashtag.
 
 # About
 
