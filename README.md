@@ -42,7 +42,7 @@ This mechanism allows BorrowableWrapper to be used in content gates to provide a
 
 ## BorrowableNFT Demo
 
-You can actually experience BorrowableNFT with [A Wizard of Tono NFT](https://opensea.io/collection/a-wizard-of-tono) that applies this mechanism. 
+You can actually experience BorrowableNFT with [A Wizard of Tono NFT](https://linktr.ee/awizardoftono) that applies this mechanism. 
 
 1. Access [BorrowableWrapper contract page(EtherScan)](https://etherscan.io/address/0xdbacF8A3591DB696783D174AB8FF773a778B23fb)
 
@@ -67,6 +67,4 @@ Access [token-gated website](https://mgate.io/go/5IZXnD5UBDD-), you can download
 
 # About
 
-This Smart Contract is an OSS version of `A Wizard of Tono` Book NFT.
-
-（ここに主に関わったメンバーの一覧を追加します）
+This Smart Contract is an OSS version of [A Wizard of Tono Book NFT](https://linktr.ee/awizardoftono).
