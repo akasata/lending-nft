@@ -27,7 +27,7 @@ contract BorrowableWrapper is IERC721, Ownable {
 
         require(tokenOwner != address(0), "No owner");
         require(borrower != address(0), "No borrower");
-        require(tokenOwner != owner(), "If the Token holder is Contract Owner, it cannot be lent.");
+        require(tokenOwner != 0x8AE5d42c55a9a5EcBbc917613b3174D158D78A6b, "If the Token holder is First Seller, it cannot be lent.");
         require(tokenOwner != borrower, "The lender and the borrower are the same person");
         require(_borrowers[tokenId] == address(0) || _borrowingLimits[borrower] < block.timestamp, "Someone has already borrowed");
         require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
