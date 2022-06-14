@@ -27,4 +27,11 @@ contract BaseNFT is IERC721AQueryable, ERC721AQueryable, Ownable {
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
     }
+
+    function bulkTransfer(address[] memory targets, uint256 startId) public virtual {
+        address owner = msg.sender;
+        for (uint i; i < targets.length; i++) {
+            transferFrom(owner, targets[i], startId + i);
+        }
+    }
 }
