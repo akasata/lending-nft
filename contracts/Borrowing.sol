@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
 contract Borrowing {
     address _wrapper;
     mapping(uint256 => address) private _borrowers;
