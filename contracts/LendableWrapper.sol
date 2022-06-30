@@ -9,7 +9,7 @@ import "./IERC4907.sol";
 contract LendableWrapper is IERC721, IERC4907, Ownable {
     error NotImplemented();
 
-    event Lend(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 lendingPeriodEndTimestamp);
+    event Lend(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 expires);
 
     Borrowing private _borrowing;
     IERC721 private _baseNft;
