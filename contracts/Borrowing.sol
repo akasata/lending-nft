@@ -6,11 +6,9 @@ contract Borrowing {
     mapping(uint256 => address) private _borrowers;
     mapping(address => uint256) private _borrowingPeriodEnds;
     mapping(uint256 => uint256) private _borrowingCount;
-    uint256 private _lendingPeriodMin;
 
-    constructor(address wrapper, uint256 lendingPeriodMin) {
+    constructor(address wrapper) {
         _wrapper = wrapper;
-        _lendingPeriodMin = lendingPeriodMin;
     }
 
     modifier onlyWrapper() {
@@ -40,8 +38,8 @@ contract Borrowing {
         return _borrowingCount[tokenId];
     }
 
-    function setBorrower(uint256 tokenId, address borrower, uint256 timestamp) public virtual onlyWrapper {
-        uint256 periodEnd = timestamp + _lendingPeriodMin * 1 minutes;
+    function setBorrower(uint256 tokenId, address borrower, uint64 expires) public virtual onlyWrapper {
+        uint256 periodEnd = expires;
         _borrowers[tokenId] = borrower;
         _borrowingPeriodEnds[borrower] = periodEnd;
         _borrowingCount[tokenId]++;

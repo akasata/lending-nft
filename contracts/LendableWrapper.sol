@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "erc721a/contracts/extensions/IERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Borrowing.sol";
+import "./IERC4907.sol";
 
-contract LendableWrapper is IERC721, Ownable {
+contract LendableWrapper is IERC721, IERC4907, Ownable {
     error NotImplemented();
 
     event Lend(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 lendingPeriodEndTimestamp);
@@ -15,13 +16,13 @@ contract LendableWrapper is IERC721, Ownable {
     IERC721AQueryable private _baseNft;
     address private _firstSeller;
 
-    constructor(address baseNftAddress, address firstSeller, uint256 lendingPeriodMin) {
-        _borrowing = new Borrowing(address(this), lendingPeriodMin);
+    constructor(address baseNftAddress, address firstSeller) {
+        _borrowing = new Borrowing(address(this));
         _baseNft = IERC721AQueryable(baseNftAddress);
         _firstSeller = firstSeller;
     }
 
-    function lend(uint256 tokenId, address borrower) public virtual {
+    function lend(uint256 tokenId, address borrower, uint64 expires) public virtual {
         address lender = msg.sender;
         address tokenOwner = _baseNft.ownerOf(tokenId);
         address currentBorrower = _borrowing.getBorrower(tokenId);
@@ -41,8 +42,9 @@ contract LendableWrapper is IERC721, Ownable {
 
         // check lendable
         require(_borrowing.canBorrow(tokenId, now), "already borrowed");
+        require(now < expires, "wrong expires");
 
-        _borrowing.setBorrower(tokenId, borrower, now);
+        _borrowing.setBorrower(tokenId, borrower, expires);
         emit Lend(borrower, tokenOwner, tokenId, _borrowing.getBorrowingPeriodEnds(borrower));
     }
 
@@ -62,20 +64,7 @@ contract LendableWrapper is IERC721, Ownable {
     //            IERC721
     // ==============================
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        if (_borrowing.isBorrowed(owner, block.timestamp)) {
-            return 1;
-        } else {
-            uint256 balance = 0;
-            uint256[] memory tokenIds = _baseNft.tokensOfOwner(owner);
-            for (uint i; i < tokenIds.length; i++) {
-                uint256 tokenId = tokenIds[i];
-                address borrower = _borrowing.getBorrower(tokenId);
-                if (borrower == address(0) || !_borrowing.isBorrowed(borrower, block.timestamp)) {
-                    balance++;
-                }
-            }
-            return balance;
-        }
+        return _baseNft.balanceOf(owner);
     }
 
     function ownerOf(uint256 tokenId) external view override returns (address owner) {
@@ -110,6 +99,25 @@ contract LendableWrapper is IERC721, Ownable {
 
     function isApprovedForAll(address, address) external view override returns (bool) {
         revert NotImplemented();
+    }
+
+    // ==============================
+    //            IERC4907
+    // ==============================
+    function setUser(uint256 tokenId, address user, uint64 expires) external override {
+        lend(tokenId, user, expires);
+
+        emit UpdateUser(tokenId,user,expires);
+    }
+
+    function userOf(uint256 tokenId) external view override returns(address) {
+        return _borrowing.getBorrower(tokenId);
+    }
+
+    function userExpires(uint256 tokenId) external view override returns(uint256) {
+        address user = _borrowing.getBorrower(tokenId);
+
+        return _borrowing.getBorrowingPeriodEnds(user);
     }
 
     // ==============================
