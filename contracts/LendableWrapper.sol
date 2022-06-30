@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "erc721a/contracts/extensions/IERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Borrowing.sol";
 import "./IERC4907.sol";
@@ -13,12 +12,12 @@ contract LendableWrapper is IERC721, IERC4907, Ownable {
     event Lend(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 lendingPeriodEndTimestamp);
 
     Borrowing private _borrowing;
-    IERC721AQueryable private _baseNft;
+    IERC721 private _baseNft;
     address private _firstSeller;
 
     constructor(address baseNftAddress, address firstSeller) {
         _borrowing = new Borrowing(address(this));
-        _baseNft = IERC721AQueryable(baseNftAddress);
+        _baseNft = IERC721(baseNftAddress);
         _firstSeller = firstSeller;
     }
 
@@ -53,10 +52,6 @@ contract LendableWrapper is IERC721, IERC4907, Ownable {
 
     function canLend(uint256 tokenId, address borrower) public view virtual returns (bool) {
         return _borrowing.canBorrow(tokenId, block.timestamp) && balanceOf(borrower) == 0;
-    }
-
-    function totalSupply() external view returns (uint256) {
-        return _baseNft.totalSupply();
     }
 
     // ==============================
