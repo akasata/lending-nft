@@ -27,7 +27,11 @@ describe("BorrowableWrapper", function () {
       await baseNFT.deployed();
 
       BWrapper = await ethers.getContractFactory("BorrowableWrapper");
-      bWrapper = await BWrapper.deploy(baseNFT.address, 1440);
+      bWrapper = await BWrapper.deploy(
+        baseNFT.address,
+        contractOwner.address,
+        1440
+      );
       await bWrapper.deployed();
     });
 
@@ -57,7 +61,11 @@ describe("BorrowableWrapper", function () {
       await baseNFT.deployed();
 
       BWrapper = await ethers.getContractFactory("BorrowableWrapper");
-      bWrapper = await BWrapper.deploy(baseNFT.address, 1440);
+      bWrapper = await BWrapper.deploy(
+        baseNFT.address,
+        contractOwner.address,
+        1440
+      );
       await bWrapper.deployed();
 
       // mint
@@ -73,7 +81,9 @@ describe("BorrowableWrapper", function () {
     });
 
     it("borrow, transfer", async function () {
-      expect(await bWrapper.lendingCount(1)).to.equal(0);
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+
+      expect(await bWrapper.lentCount(1)).to.equal(0);
 
       const borrow1Tx = await bWrapper.connect(borrower00).borrow(1);
       await borrow1Tx.wait();
@@ -83,9 +93,13 @@ describe("BorrowableWrapper", function () {
       expect(await baseNFT.balanceOf(tokenHolder00.address)).to.equal(1);
 
       expect(await bWrapper.ownerOf(1)).to.equal(tokenHolder00.address);
-      expect(await bWrapper.balanceOf(borrower00.address)).to.equal(1);
-      expect(await bWrapper.balanceOf(tokenHolder00.address)).to.equal(0);
-      expect(await bWrapper.lendingCount(1)).to.equal(1);
+      expect(await bWrapper.balanceOf(borrower00.address)).to.equal(0);
+      expect(await bWrapper.balanceOf(tokenHolder00.address)).to.equal(1);
+      expect(await bWrapper.lentCount(1)).to.equal(1);
+
+      // IERC4907
+      expect(await bWrapper.userOf(1)).to.equal(borrower00.address);
+      expect(await bWrapper.userExpires(1)).to.above(currentTimestamp);
 
       // transfer
       const transfer1Tx = await baseNFT
@@ -99,10 +113,14 @@ describe("BorrowableWrapper", function () {
       expect(await baseNFT.balanceOf(tokenHolder01.address)).to.equal(1);
 
       expect(await bWrapper.ownerOf(1)).to.equal(tokenHolder01.address);
-      expect(await bWrapper.balanceOf(borrower00.address)).to.equal(1);
+      expect(await bWrapper.balanceOf(borrower00.address)).to.equal(0);
       expect(await bWrapper.balanceOf(tokenHolder00.address)).to.equal(0);
-      expect(await bWrapper.balanceOf(tokenHolder01.address)).to.equal(0);
-      expect(await bWrapper.lendingCount(1)).to.equal(1);
+      expect(await bWrapper.balanceOf(tokenHolder01.address)).to.equal(1);
+      expect(await bWrapper.lentCount(1)).to.equal(1);
+
+      // IERC4907
+      expect(await bWrapper.userOf(1)).to.equal(borrower00.address);
+      expect(await bWrapper.userExpires(1)).to.above(currentTimestamp);
     });
   });
 });

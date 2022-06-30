@@ -6,53 +6,53 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Borrowing.sol";
 import "./IERC4907.sol";
 
-contract BorrowableWrapper is IERC721, IERC4907, Ownable {
+contract LendableWrapper is IERC721, IERC4907, Ownable {
     error NotImplemented();
 
-    event Borrow(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 expires);
+    event Lend(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 expires);
 
     Borrowing private _borrowing;
     IERC721 private _baseNft;
     address private _firstSeller;
-    uint64 private _lendingPeriodMin;
 
-    constructor(address baseNftAddress, address firstSeller, uint64 lendingPeriodMin) {
+    constructor(address baseNftAddress, address firstSeller) {
         _borrowing = new Borrowing(address(this));
         _baseNft = IERC721(baseNftAddress);
-        _lendingPeriodMin = lendingPeriodMin;
         _firstSeller = firstSeller;
     }
 
-    function borrow(uint256 tokenId) public virtual {
+    function lend(uint256 tokenId, address borrower, uint64 expires) public virtual {
+        address lender = msg.sender;
         address tokenOwner = _baseNft.ownerOf(tokenId);
-        address borrower = msg.sender;
         uint256 currentTimestamp = block.timestamp;
-        uint64 expires = uint64(currentTimestamp + _lendingPeriodMin * 1 minutes);
 
         // check TokenOwner
         require(tokenOwner != address(0), "No owner");
         require(tokenOwner != _firstSeller, "If the Token holder is first seller, it cannot be lent.");
 
+        // check Lender
+        require(lender != address(0), "No lender");
+        require(lender == tokenOwner, "Not owned by the lender.");
+        require(lender != borrower, "The lender and the borrower are the same person");
+
         // check borrower
-        require(borrower != address(0), "No borrower");
-        require(borrower != tokenOwner, "The lender and the borrower are the same person");
         require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
 
-        // check borrowable
+        // check lendable
         require(_borrowing.canBorrow(tokenId, currentTimestamp), "already borrowed");
         require(currentTimestamp < expires, "wrong expires");
 
         _borrowing.setBorrower(tokenId, borrower, expires);
 
-        emit Borrow(borrower, tokenOwner, tokenId, expires);
-        emit UpdateUser(tokenId, msg.sender, expires);
+        emit Lend(borrower, tokenOwner, tokenId, expires);
+        emit UpdateUser(tokenId, borrower, expires);
     }
 
     function lentCount(uint256 tokenId) public view virtual returns (uint256) {
         return _borrowing.borrowedCount(tokenId);
     }
 
-    function canBorrow(uint256 tokenId, address borrower) public view virtual returns (bool) {
+    function canLend(uint256 tokenId, address borrower) public view virtual returns (bool) {
         return _borrowing.canBorrow(tokenId, block.timestamp) && balanceOf(borrower) == 0;
     }
 
@@ -83,9 +83,11 @@ contract BorrowableWrapper is IERC721, IERC4907, Ownable {
         revert NotImplemented();
     }
 
+
     function setApprovalForAll(address, bool) external override {
         revert NotImplemented();
     }
+
 
     function getApproved(uint256) external view override returns (address) {
         revert NotImplemented();
@@ -99,10 +101,7 @@ contract BorrowableWrapper is IERC721, IERC4907, Ownable {
     //            IERC4907
     // ==============================
     function setUser(uint256 tokenId, address user, uint64 expires) external override {
-        require(msg.sender == user, "user should be msg.sender");
-
-        // ignore user and expires
-        borrow(tokenId);
+        lend(tokenId, user, expires);
     }
 
     function userOf(uint256 tokenId) external view override returns(address) {
