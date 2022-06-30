@@ -25,8 +25,7 @@ contract LendableWrapper is IERC721, IERC4907, Ownable {
     function lend(uint256 tokenId, address borrower, uint64 expires) public virtual {
         address lender = msg.sender;
         address tokenOwner = _baseNft.ownerOf(tokenId);
-        address currentBorrower = _borrowing.getBorrower(tokenId);
-        uint256 now = block.timestamp;
+        uint256 currentTimestamp = block.timestamp;
 
         // check TokenOwner
         require(tokenOwner != address(0), "No owner");
@@ -41,8 +40,8 @@ contract LendableWrapper is IERC721, IERC4907, Ownable {
         require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
 
         // check lendable
-        require(_borrowing.canBorrow(tokenId, now), "already borrowed");
-        require(now < expires, "wrong expires");
+        require(_borrowing.canBorrow(tokenId, currentTimestamp), "already borrowed");
+        require(currentTimestamp < expires, "wrong expires");
 
         _borrowing.setBorrower(tokenId, borrower, expires);
         emit Lend(borrower, tokenOwner, tokenId, _borrowing.getBorrowingPeriodEnds(borrower));
