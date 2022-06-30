@@ -3,82 +3,71 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./BaseNFT.sol";
+import "./Borrowing.sol";
+import "./IERC4907.sol";
 
-contract BorrowableWrapper is IERC721, Ownable {
+contract BorrowableWrapper is IERC721, IERC4907, Ownable {
     error NotImplemented();
 
-    event Borrow(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 limit);
+    event Borrow(address indexed borrower, address indexed owner, uint256 indexed tokenId, uint256 expires);
 
-    BaseNFT private nftContract;
-    mapping(uint256 => address) private _borrowers;
-    mapping(address => uint256) private _borrowingLimits;
-    mapping(uint256 => uint256) private _borrowingCount;
-    uint256 private _lendingPeriodMin;
+    Borrowing private _borrowing;
+    IERC721 private _baseNft;
+    address private _firstSeller;
+    uint64 private _lendingPeriodMin;
 
-    constructor(address nftAddress, uint256 lendingPeriodMin) {
-        nftContract = BaseNFT(nftAddress);
+    constructor(address baseNftAddress, address firstSeller, uint64 lendingPeriodMin) {
+        _borrowing = new Borrowing(address(this));
+        _baseNft = IERC721(baseNftAddress);
         _lendingPeriodMin = lendingPeriodMin;
+        _firstSeller = firstSeller;
+    }
+
+    function _borrow(uint256 tokenId, address borrower, uint64 expires) internal virtual {
+        address tokenOwner = _baseNft.ownerOf(tokenId);
+        uint256 currentTimestamp = block.timestamp;
+
+        // check TokenOwner
+        require(tokenOwner != address(0), "No owner");
+        require(tokenOwner != _firstSeller, "If the Token holder is first seller, it cannot be lent.");
+
+        // check borrower
+        require(borrower != address(0), "No borrower");
+        require(borrower != tokenOwner, "The lender and the borrower are the same person");
+        require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
+
+        // check borrowable
+        require(_borrowing.canBorrow(tokenId, currentTimestamp), "already borrowed");
+        require(currentTimestamp < expires, "wrong expires");
+
+        _borrowing.setBorrower(tokenId, borrower, expires);
+
+        emit Borrow(borrower, tokenOwner, tokenId, expires);
     }
 
     function borrow(uint256 tokenId) public virtual {
-        address tokenOwner = nftContract.ownerOf(tokenId);
-        address borrower = msg.sender;
+        uint64 expires = uint64(block.timestamp + _lendingPeriodMin * 1 minutes);
 
-        require(tokenOwner != address(0), "No owner");
-        require(borrower != address(0), "No borrower");
-        require(tokenOwner != owner(), "If the Token holder is Contract Owner, it cannot be lent.");
-        require(tokenOwner != borrower, "The lender and the borrower are the same person");
-        require(_borrowers[tokenId] == address(0) || _borrowingLimits[borrower] < block.timestamp, "Someone has already borrowed");
-        require(balanceOf(borrower) == 0, "Borrower has already owned or borrowed");
-
-        uint256 limit = block.timestamp + _lendingPeriodMin * 1 minutes;
-        _borrowers[tokenId] = borrower;
-        _borrowingLimits[borrower] = limit;
-        _borrowingCount[tokenId]++;
-
-        emit Borrow(borrower, tokenOwner, tokenId, limit);
+        _borrow(tokenId, msg.sender, expires);
     }
 
-    function _isBorrowing(address borrower) internal view virtual returns(bool) {
-        return _borrowingLimits[borrower] > block.timestamp;
+    function lentCount(uint256 tokenId) public view virtual returns (uint256) {
+        return _borrowing.borrowedCount(tokenId);
     }
 
-    function _borrowedBalanceOf(address borrower) internal view virtual returns(uint256) {
-        return _isBorrowing(borrower) ? 1 : 0;
-    }
-
-    function lendingCount(uint256 tokenId) public view virtual returns (uint256) {
-        return _borrowingCount[tokenId];
-    }
-
-    function totalSupply() external view returns (uint256) {
-        return nftContract.totalSupply();
+    function canBorrow(uint256 tokenId, address borrower) public view virtual returns (bool) {
+        return _borrowing.canBorrow(tokenId, block.timestamp) && balanceOf(borrower) == 0;
     }
 
     // ==============================
     //            IERC721
     // ==============================
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        uint256 borrowedBalance = _borrowedBalanceOf(owner);
-
-        if (borrowedBalance > 0) {
-            return borrowedBalance;
-        } else {
-            uint256 balance = 0;
-            uint256[] memory tokenIds = nftContract.tokensOfOwner(owner);
-            for (uint i; i < tokenIds.length; i++) {
-                uint256 tokenId = tokenIds[i];
-                if (_borrowers[tokenId] == address(0) || !_isBorrowing(_borrowers[tokenId])) {
-                    balance++;
-                }
-            }
-            return balance;
-        }
+        return _baseNft.balanceOf(owner);
     }
 
     function ownerOf(uint256 tokenId) external view override returns (address owner) {
-        return nftContract.ownerOf(tokenId);
+        return _baseNft.ownerOf(tokenId);
     }
 
     function safeTransferFrom(address, address, uint256, bytes calldata) external override {
@@ -102,13 +91,34 @@ contract BorrowableWrapper is IERC721, Ownable {
         revert NotImplemented();
     }
 
-
     function getApproved(uint256) external view override returns (address) {
         revert NotImplemented();
     }
 
     function isApprovedForAll(address, address) external view override returns (bool) {
         revert NotImplemented();
+    }
+
+    // ==============================
+    //            IERC4907
+    // ==============================
+    function setUser(uint256 tokenId, address user, uint64 expires) external override {
+        require(msg.sender == user, "user should be msg.sender");
+
+        // ignore user and expires
+        this.borrow(tokenId);
+
+        emit UpdateUser(tokenId, msg.sender, uint64(_borrowing.getBorrowingPeriodEnds(msg.sender)));
+    }
+
+    function userOf(uint256 tokenId) external view override returns(address) {
+        return _borrowing.getBorrower(tokenId);
+    }
+
+    function userExpires(uint256 tokenId) external view override returns(uint256) {
+        address user = _borrowing.getBorrower(tokenId);
+
+        return _borrowing.getBorrowingPeriodEnds(user);
     }
 
     // ==============================
