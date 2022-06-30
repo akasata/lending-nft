@@ -23,9 +23,11 @@ contract BorrowableWrapper is IERC721, IERC4907, Ownable {
         _firstSeller = firstSeller;
     }
 
-    function _borrow(uint256 tokenId, address borrower, uint64 expires) internal virtual {
+    function borrow(uint256 tokenId) public virtual {
         address tokenOwner = _baseNft.ownerOf(tokenId);
+        address borrower = msg.sender;
         uint256 currentTimestamp = block.timestamp;
+        uint64 expires = uint64(currentTimestamp + _lendingPeriodMin * 1 minutes);
 
         // check TokenOwner
         require(tokenOwner != address(0), "No owner");
@@ -43,12 +45,7 @@ contract BorrowableWrapper is IERC721, IERC4907, Ownable {
         _borrowing.setBorrower(tokenId, borrower, expires);
 
         emit Borrow(borrower, tokenOwner, tokenId, expires);
-    }
-
-    function borrow(uint256 tokenId) public virtual {
-        uint64 expires = uint64(block.timestamp + _lendingPeriodMin * 1 minutes);
-
-        _borrow(tokenId, msg.sender, expires);
+        emit UpdateUser(tokenId, msg.sender, expires);
     }
 
     function lentCount(uint256 tokenId) public view virtual returns (uint256) {
@@ -86,7 +83,6 @@ contract BorrowableWrapper is IERC721, IERC4907, Ownable {
         revert NotImplemented();
     }
 
-
     function setApprovalForAll(address, bool) external override {
         revert NotImplemented();
     }
@@ -106,9 +102,7 @@ contract BorrowableWrapper is IERC721, IERC4907, Ownable {
         require(msg.sender == user, "user should be msg.sender");
 
         // ignore user and expires
-        this.borrow(tokenId);
-
-        emit UpdateUser(tokenId, msg.sender, uint64(_borrowing.getBorrowingPeriodEnds(msg.sender)));
+        borrow(tokenId);
     }
 
     function userOf(uint256 tokenId) external view override returns(address) {

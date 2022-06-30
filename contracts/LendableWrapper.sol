@@ -43,7 +43,9 @@ contract LendableWrapper is IERC721, IERC4907, Ownable {
         require(currentTimestamp < expires, "wrong expires");
 
         _borrowing.setBorrower(tokenId, borrower, expires);
-        emit Lend(borrower, tokenOwner, tokenId, _borrowing.getBorrowingPeriodEnds(borrower));
+
+        emit Lend(borrower, tokenOwner, tokenId, expires);
+        emit UpdateUser(tokenId, borrower, expires);
     }
 
     function lentCount(uint256 tokenId) public view virtual returns (uint256) {
@@ -100,8 +102,6 @@ contract LendableWrapper is IERC721, IERC4907, Ownable {
     // ==============================
     function setUser(uint256 tokenId, address user, uint64 expires) external override {
         lend(tokenId, user, expires);
-
-        emit UpdateUser(tokenId,user,expires);
     }
 
     function userOf(uint256 tokenId) external view override returns(address) {
